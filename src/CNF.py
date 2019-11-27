@@ -1,6 +1,8 @@
 import sys
 from myTask import MyTask
 from timeit import default_timer as timer
+from draw_controller import draw
+from itertools import islice
 import os
 
 
@@ -268,6 +270,76 @@ class CNF:
         print('============================================================================')
         return True
 
+    def parseOutputPrintController(self, nameFile, controllerStates, parser,filename,controller_name):
+        sets = [set([]) for i in range(self.num_types)]
+        fres = open(nameFile, 'r')
+        res = fres.readlines()
+        outfile = open(filename, 'w+')
+        if 'UNSAT' in res[0]:
+            return False
+        if 'INDET' in res[0]:
+            return None
+
+        res = res[1]
+        res = res.split(' ')
+        for r in res:
+            if '\n' in res:
+                continue
+            var = int(r)
+            if var > 0:
+                varName = self.mapNumberVariable[var]
+                t = self.mapVariableType[varName]
+                sets[t - 1].add(varName)
+        outfile.write('============================================================================\n')
+        outfile.write('Controller -- CS = Controller State - START\n')
+        outfile.write('============================================================================\n')
+        for i in range(len(sets)):
+            if i + 1 in self.print_types:
+                s = sets[i]
+                if i == 0:
+                    # pair atom controller
+                    outfile.write('===================\n===================\n')
+                    outfile.write('Atom (CS)\n')
+                    outfile.write('___________________\n')
+                    for n in controllerStates:
+                        outfile.write('----------\n')
+                        for j in s:
+                            ind = '(' + n + ')'
+                            if ind in j:
+                                outfile.write('%s %s' % (str(parser.get_var_string(j.split(ind)[0])), str(ind)) + '\n')
+                elif i == 1:
+                    # pair cs action
+                    outfile.write('===================\n===================\n')
+                    outfile.write('(CS, Action with arguments)\n')
+                    outfile.write('___________________\n')
+                    for n in controllerStates:
+                        for j in s:
+                            if '(' + n + ',' in j:
+                                outfile.write(j + '\n')
+                elif i == 2:
+                    # Triplet
+                    outfile.write('===================\n===================\n')
+                    outfile.write('(CS, Action name, CS)\n')
+                    outfile.write('___________________\n')
+                    for n in controllerStates:
+                        for j in s:
+                            if '(' + n + ',' in j:
+                                outfile.write(j + '\n')
+                else:
+                    outfile.write('===================\n')
+                    outfile.write('(CS, CS)\n')
+                    outfile.write('___________________\n')
+                    for j in s:
+                        outfile.write(j + '\n')
+        outfile.write('===================\n')
+        outfile.write('Solved with %i states' % len(controllerStates) + '\n')
+        outfile.write('============================================================================\n')
+        outfile.write('Controller -- CS = Controller State - END\n')
+        outfile.write('============================================================================\n')
+        outfile.close()
+        draw(filename,controller_name)
+        return True
+
     def getNumberVariables(self):
         return len(self.mapVariableNumber)
 
@@ -467,6 +539,18 @@ class CNF:
         start = timer()
         acts = task.get_action_names()
 
+        
+        # ALBERTO
+        """
+        #0.5 y 0.2 para el caso de scratch inicial
+        l1 = int(0.4*len(controllerStates))
+        l2 = int(0.35*len(controllerStates))
+        #controllerDivision = [list(islice(controllerStates, elem))
+         #for elem in [l1,l2,l3]]
+        controllerDivision = [controllerStates[:l1],controllerStates[l1:l1+l2],controllerStates[l1+l2:]]
+        print('..Controller division..')
+        print(str(controllerDivision))"""
+
         for n1 in controllerStates:
             for a_name in acts:
                 for n2 in controllerStates:
@@ -482,11 +566,38 @@ class CNF:
                     pair2 = self.generatePairActionControllerState(a_name, n1)
                     self.addClause(['-' + pair1, pair2])  # 4
 
-                var1 = self.generatePairActionControllerState(a_name, n1)
-                var_triplets = []
-                for n2 in controllerStates:
+                
+                # ALBERTO
+                # To execute this optimization, comment lines 523 to 528 and uncomment these lines,
+                # as well as the bucket division (lines 475 to 481)
+                """
+                position = None
+                for b in range(len(controllerDivision)):
+                    if n1 in controllerDivision[b]:
+                        position = b + 1
+                if ('l' + str(position) in a_name) or ('unfair' in a_name) or ('explain' in a_name) or ('goal' in a_name):
+                    for n2 in controllerStates:
+                        var_triplets.append(self.generateTripletCSACS(n1, a_name, n2))
+                    self.addClause(['-' + var1] + var_triplets)  # 2
+                else:
+                    self.addClause(['-' + var1] + var_triplets)  # 2
+                    #print('NO PUEDO EJECUTAR ' + a_name + ' en l' + str(position))
+
+
+                newControllerList = []
+                for bucket in controllerDivision[position-1:]:
+                    newControllerList += bucket
+                for n2 in newControllerList:
                     var_triplets.append(self.generateTripletCSACS(n1, a_name, n2))
                 self.addClause(['-' + var1] + var_triplets)  # 2
+                """
+
+                var1 = self.generatePairActionControllerState(a_name, n1)
+                var_triplets = []
+
+                for n2 in controllerStates:
+                    var_triplets.append(self.generateTripletCSACS(n1, a_name, n2))
+                self.addClause(['-' + var1] + var_triplets) # 2
 
                 var1 = self.generatePairActionControllerState(a_name, n1)
                 var_bin = []
