@@ -21,12 +21,34 @@ From the `src/*` directory run the following command:
 This would run the solver for the task 03 of the Islands domain. The path to the domain and the task must be included.
 
 ## Other options (arguments when calling)
-- `-time_limit:` to set the time limit
-- `-mem_limit:`  to set the memory limit
-- `-name_temp:` to set the name for the temporary files (eg. where the SAT formula is stored). If running the planner for many tasks in parallel use different temp names to avoid erroneous replacement of files
-- `-strong:` to set the planner to look for strong policies
-- `-inc:` to set the increment in the size of the controller each step. By default the planner looks for a solution of size *2*, if it does not find one it looks for a solution of size *3*, and so on. If inc is set to *i*, the planner looks for a solution of size *2*, if it does not find one it looks for a solution of size *2+i*, and so on
-- `-policy:` to set whether the final policy (if found) should be displayed
+
+```
+  -h, --help            show this help message and exit
+  --time_limit TIME_LIMIT
+                        Time limit (int) for solver in seconds (default:
+                        3600).
+  --mem_limit MEM_LIMIT
+                        Memory limit (int) for solver in MB (default: 4096)
+  --name_temp NAME_TEMP
+                        Name for temp files; erased after solver is done
+                        (default: temp)
+  --strong              Search for strong solutions (instead of default strong
+                        cyclic solutions) - (default: False)
+  --start START         Size of the policy to start trying (default: 1)
+  --inc INC             Increments in controller size per step. By default the
+                        planner looks for a solution of size *2*, if it does
+                        not find one it looks for a solution of size *3*, and
+                        so on. If inc is set to *i*, the planner looks for a
+                        solution of size *2*, if it does not find one it looks
+                        for a solution of size *2+i*, and so on (default: 1)
+  --gen-info            Show info about SAT formula generation (default:
+                        False)
+  --show-policy         Show final policy, if found (default: False)
+  --draw-policy         Draw final policy (controller), if found (default:
+                        False)
+  --no-clean            Do not clean temporary files created (default: False)
+```
+
 
 ## Interpreting the policy
 
