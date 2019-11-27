@@ -62,27 +62,27 @@ args_parser.add_argument(
     '--inc',
     type=int,
     default=1,
-    help='Increments in controller size per step (default: %(default)s)')
+    help='Increments in controller size per step. By default the planner looks for a solution of size *2*, if it does not find one it looks for a solution of size *3*, and so on. If inc is set to *i*, the planner looks for a solution of size *2*, if it does not find one it looks for a solution of size *2+i*, and so on (default: %(default)s)')
 args_parser.add_argument(
     '--gen-info',
     action='store_true',
     default=False,
-    help='Show info about SAT formula generation %(default)s)')
+    help='Show info about SAT formula generation (default: %(default)s)')
 args_parser.add_argument(
     '--show-policy',
     action='store_true',
     default=False,
-    help='Show final policy, if found %(default)s)')
+    help='Show final policy, if found (default: %(default)s)')
 args_parser.add_argument(
     '--draw-policy',
     action='store_true',
     default=False,
-    help='Draw final policy (controller), if found %(default)s)')
+    help='Draw final policy (controller), if found (default: %(default)s)')
 args_parser.add_argument(
     '--no-clean',
     action='store_true',
     default=False,
-    help='Do not clean temporary files created %(default)s)')
+    help='Do not clean temporary files created (default: %(default)s)')
 
 params = vars(args_parser.parse_args())  # vars returns a dictionary of the arguments
 
