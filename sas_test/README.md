@@ -22,7 +22,7 @@ This will generate two files:
 
 This is taken from [this post](https://github.com/orgs/ssardina-planning/teams/fond-sat/discussions/1/comments/13)
 
-The translate folder contains the FD parser code. The main file is [`translate.py`]( (../src/translate/translate.py). It takes 4 arguments
+The translate folder contains the FD parser code. The main file is [`translate.py`](../src/translate/translate.py). It takes 4 arguments
 
 - Time limit
 - Domain PDDL file
