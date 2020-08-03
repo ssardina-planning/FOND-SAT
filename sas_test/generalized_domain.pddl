@@ -6,9 +6,7 @@
 
   (:types Cell)
 
-  (:constants
-    c0 c1 c2 - Cell
-  )
+(:constants c0 c1 c2 c3 - Cell)
 
   (:predicates
   	(left ?c1 ?c2 - Cell)

@@ -1,13 +1,15 @@
 (define (problem p1)
 (:domain no_running_1)
-(:init 
-(left  c2 c1)
-(left  c1 c0)
+(:init
 (right c0 c1)
+(left c1 c0)
 (right c1 c2)
+(left c2 c1)
+(right c2 c3)
+(left c3 c2)
 (at c0)
 )
-(:goal 
-(at c2)
+(:goal
+(at c3)
 )
 )
