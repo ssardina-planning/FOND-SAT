@@ -13,6 +13,10 @@ if [ -z "$n" ];  then
   exit 0
 fi
 
+# create directories if they don't exist
+mkdir -p "./output/pddl"
+mkdir -p "./output/sas"
+
 echo "Generating PDDL and corresponding SAS files for 1 till $n"
 for (( i=1; i<=n; i++ ))
 do
