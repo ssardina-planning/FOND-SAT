@@ -1,17 +1,18 @@
-import shutil
-
-from CNF import CNF
-import os
 import sys
+import os
+
+cd_fond_sat = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(cd_fond_sat)
+
+import shutil
+from CNF import CNF
 from parser import Parser
 from myTask import MyTask
 from timeit import default_timer as timer
 import time
 import argparse
 
-TMP_DIR = 'tmp' # subdir where to store all aux files generated (e.g., SAS files)
-
-
+TMP_DIR = os.path.join(cd_fond_sat, 'tmp') # subdir where to store all aux files generated (e.g., SAS files)
 
 def clean(n1, n2, n3, n4, n5, msg):
     print(msg)
@@ -106,13 +107,16 @@ no_clean = params['no_clean']
 # Parse the PDDL domain and problem and generate SAS files (http://www.fast-downward.org/TranslatorOutputFormat)
 # (all aux files created in temporary directory)
 p = Parser()    # build utility object Parser
-p.set_domain(params['path_domain'])
-p.set_problem(params['path_instance'])
+p.set_domain(os.path.abspath(params['path_domain']))
+p.set_problem(os.path.abspath(params['path_instance']))
 name_SAS_file = os.path.join(TMP_DIR, 'output-sas-{}.txt'.format(params['name_temp']))                # aux file
+
+# Seb: change to FOND-SAT folder and remember where we where. FOND-SAT must be in its src/ folder to run
+current_dir = os.getcwd()
+os.chdir(cd_fond_sat)
+
 p.generate_file(name_SAS_file)
 p.generate_task(name_SAS_file)
-
-
 
 my_task = p.translate_to_atomic()
 fair = my_task.is_fair()
@@ -203,5 +207,9 @@ if not no_clean:
     clean(name_formula_file, name_output_satsolver, name_SAS_file, name_formula_file_extra, name_final, 'Done')
     if os.path.exists(TMP_DIR):
         shutil.rmtree(TMP_DIR)
+
+# Seb: return to there it was called
+os.chdir(current_dir)
+
 exit(0)
 
