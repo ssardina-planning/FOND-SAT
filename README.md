@@ -4,14 +4,25 @@ FOND solver based on SAT, as per the following paper:
 
 * Tomas Geffner, Hector Geffner: [Compact Policies for Fully Observable Non-Deterministic Planning as SAT](https://arxiv.org/pdf/1806.09455.pdf). ICAPS 2018: 88-96
 
-
 ## Authors
 
 Tomas Geffner and Hector Geffner
 
-## Files
+## Setup
+
+### Files
+
 - `F-domains/*` contains the FOND domains used
 - `src/*` contains the code for the solver, and a pre-compiled version of Minisat
+
+### Required
+
+```bash
+pip3 install graphviz
+```
+
+**RECOMMENDATION:** install a version of Minisat from *http://minisat.se/*, comment line 117 of *main.py* and uncomment line 118. Using another version of Minisat will allow the use of time/memory constraints (newer version is also faster), and does not require the modification of *parseOutput(...)*. The results shown in the paper were obtained using a newer version of Minisat, not the pre-compiled one.
+
 
 ## Example usage (basic)
 From the `src/*` directory run the following command:
@@ -73,7 +84,7 @@ You need to adapt it to the corresponding SAT solver, for example to use Minisat
 
 Then, you need to adapt function `parseOutput(...)` in `src/CNF.py`, to parse the output of your SAT solver  (currently works for versions of Minisat).
 
-**RECOMMENDATION:** install a version of Minisat from *http://minisat.se/*, comment line 117 of *main.py* and uncomment line 118. Using another version of Minisat will allow the use of time/memory constraints (newer version is also faster), and does not require the modification of *parseOutput(...)*. The results shown in the paper were obtained using a newer version of Minisat, not the pre-compiled one.
+**RECOMMENDATION:** see above for installing Minisat.
 
 ## Dual FOND planning
 
