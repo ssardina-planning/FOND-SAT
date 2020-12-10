@@ -11,9 +11,11 @@ from myTask import MyTask
 from timeit import default_timer as timer
 import time
 import argparse
+import random
 
-TMP_DIR = os.path.join(cd_fond_sat, 'tmp') # subdir where to store all aux files generated (e.g., SAS files)
 
+TMP_DIR = os.path.join(cd_fond_sat, f'tmp_fs_{random.randrange(99999)}') # subdir where to store all aux files generated (e.g., SAS files)
+print(TMP_DIR)
 def clean(n1, n2, n3, n4, n5, msg):
     print(msg)
     os.system('rm %s %s %s %s %s' % (n1, n2, n3, n4, n5))
